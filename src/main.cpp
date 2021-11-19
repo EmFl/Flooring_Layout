@@ -20,7 +20,7 @@ auto main() -> int
 
     SetTargetFPS(TARGET_FPS);
 
-    const auto [planks, index] = calculate({ 550, 400 }, { 130, 25 });
+    const auto [planks, index] = calculate({ 560, 400 }, { 130, 25 });
 
     while (!WindowShouldClose())
     {
@@ -77,7 +77,7 @@ auto main() -> int
         std::stringstream ss;
         ss << "Planks needed: " << index;
 
-        DrawText(ss.str().c_str(), 640, 10, 20, RED);
+        DrawText(ss.str().c_str(), 10, 130, 20, RED);
 
         DrawRectangle(10, 10, 250, 113, Fade(SKYBLUE, 0.5f));
         DrawRectangleLines(10, 10, 250, 113, BLUE);
