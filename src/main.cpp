@@ -1,10 +1,14 @@
 #include <random>
+#include <string>
 #include <vector>
 
 #include "config.h"
 #include "flooring.h"
 #include "plank.h"
 #include "raylib.h"
+
+#define RAYGUI_IMPLEMENTATION
+#include "extras/raygui.h"
 
 auto main() -> int
 {
@@ -20,7 +24,10 @@ auto main() -> int
 
     SetTargetFPS(TARGET_FPS);
 
-    const auto [planks, index] = calculate({ 560, 400 }, { 130, 25 });
+    std::pair<int, int> room_size{ 560, 400 };
+    std::pair<int, int> plank_size{ 130, 25 };
+
+    auto [planks, index] = calculate(room_size, plank_size);
 
     while (!WindowShouldClose())
     {
@@ -74,18 +81,62 @@ auto main() -> int
 
         EndMode2D();
 
-        std::stringstream ss;
-        ss << "Planks needed: " << index;
-
-        DrawText(ss.str().c_str(), 10, 130, 20, RED);
-
-        DrawRectangle(10, 10, 250, 113, Fade(SKYBLUE, 0.5f));
-        DrawRectangleLines(10, 10, 250, 113, BLUE);
+        DrawRectangle(10, 10, 250, 300, Fade(SKYBLUE, 0.5f));
+        DrawRectangleLines(10, 10, 250, 300, BLUE);
 
         DrawText("Controls:", 20, 20, 10, BLACK);
         DrawText("- WSAD or Arrow keys to move", 40, 40, 10, DARKGRAY);
         DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, DARKGRAY);
         DrawText("- R to reset Zoom and Position", 40, 80, 10, DARKGRAY);
+
+        static constexpr std::pair<int, int> room_range{ 20, 81 };
+        static constexpr std::pair<int, int> plank_range{ 1, 31 };
+        static constexpr int multiplier = 10;
+
+        room_size.first = std::floor(GuiSliderBar(
+                              (Rectangle){ 80, 100, 120, 20 },
+                              "Room X",
+                              std::to_string(room_size.first).c_str(),
+                              static_cast<float>(room_size.first / multiplier),
+                              room_range.first,
+                              room_range.second)) *
+                          multiplier;
+        room_size.second = std::floor(GuiSliderBar(
+                               (Rectangle){ 80, 130, 120, 20 },
+                               "Room Y",
+                               std::to_string(room_size.second).c_str(),
+                               static_cast<float>(room_size.second / multiplier),
+                               room_range.first,
+                               room_range.second)) *
+                           multiplier;
+
+        plank_size.first = std::floor(GuiSliderBar(
+                               (Rectangle){ 80, 160, 120, 20 },
+                               "Plank X",
+                               std::to_string(plank_size.first).c_str(),
+                               static_cast<float>(plank_size.first / multiplier),
+                               plank_range.first,
+                               plank_range.second)) *
+                           multiplier;
+        plank_size.second = std::floor(GuiSliderBar(
+                                (Rectangle){ 80, 190, 120, 20 },
+                                "Plank Y",
+                                std::to_string(plank_size.second).c_str(),
+                                static_cast<float>(plank_size.second / multiplier),
+                                plank_range.first,
+                                plank_range.second)) *
+                            multiplier;
+
+        std::stringstream ss;
+        ss << "Planks needed: " << index;
+        DrawText(ss.str().c_str(), 40, 220, 20, BLACK);
+
+        if (GuiButton((Rectangle){ 40, 260, 120, 30 }, "RECALCULATE"))
+        {
+            const auto result = calculate(room_size, plank_size);
+            planks = result.first;
+            index = result.second;
+        }
 
         EndDrawing();
     }

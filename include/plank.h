@@ -20,7 +20,7 @@ struct Plank
 
     auto draw() const -> void
     {
-        static constexpr auto fontSize = 12;
+        static constexpr auto fontSize = 20;
         static constexpr auto drawScaleFactor = 2;
         static constexpr auto textOffset = 4;
 
@@ -32,7 +32,7 @@ struct Plank
         DrawRectangle(x, y, w, h, color_);
         std::stringstream ss;
         ss << "(ID: " << id_ << ") " << dimensions_.first << " x " << dimensions_.second;
-        DrawText(ss.str().c_str(), x + textOffset, y + textOffset, fontSize, BLACK);
+        DrawText(ss.str().c_str(), x + textOffset, y + textOffset, fontSize, DARKGRAY);
         DrawRectangleLines(x, y, w, h, BLACK);
     }
 };
