@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <random>
 #include <string>
 #include <vector>
@@ -27,7 +28,7 @@ auto main() -> int
     std::pair<int, int> room_size{ 560, 400 };
     std::pair<int, int> plank_size{ 130, 25 };
 
-    auto [planks, index] = calculate(room_size, plank_size);
+    auto result = calculate(room_size, plank_size);
 
     while (!WindowShouldClose())
     {
@@ -74,15 +75,17 @@ auto main() -> int
 
         BeginMode2D(camera);
 
-        for (const auto& plank : planks)
+        for (const auto& plank : result.planks)
         {
             plank.draw();
         }
 
         EndMode2D();
 
-        DrawRectangle(10, 10, 250, 300, Fade(SKYBLUE, 0.5f));
-        DrawRectangleLines(10, 10, 250, 300, BLUE);
+        static constexpr auto blue_rect_height = 360;
+
+        DrawRectangle(10, 10, 300, blue_rect_height, Fade(SKYBLUE, 0.5f));
+        DrawRectangleLines(10, 10, 300, blue_rect_height, BLUE);
 
         DrawText("Controls:", 20, 20, 10, BLACK);
         DrawText("- WSAD or Arrow keys to move", 40, 40, 10, DARKGRAY);
@@ -128,14 +131,14 @@ auto main() -> int
                             multiplier;
 
         std::stringstream ss;
-        ss << "Planks needed: " << index;
+        ss << "Planks needed: " << result.all_planks << '\n'
+           << "Left over pieces: " << result.left_over << '\n'
+           << "Uncut planks: " << result.uncut;
         DrawText(ss.str().c_str(), 40, 220, 20, BLACK);
 
-        if (GuiButton((Rectangle){ 40, 260, 120, 30 }, "RECALCULATE"))
+        if (GuiButton((Rectangle){ 40, 320, 120, 30 }, "RECALCULATE"))
         {
-            const auto result = calculate(room_size, plank_size);
-            planks = result.first;
-            index = result.second;
+            result = calculate(room_size, plank_size);
         }
 
         EndDrawing();

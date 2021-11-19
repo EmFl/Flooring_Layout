@@ -18,7 +18,7 @@ auto generate_color(int index) -> Color
     return { dist(rng), dist(rng), dist(rng), color_max_value };
 }
 
-auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) -> std::pair<std::vector<Plank>, int>
+auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) -> calculation_result
 {
     // uncut planks
     const int uncut_in_column = std::floor(static_cast<float>(room_size.second) / static_cast<float>(plank_size.second));
@@ -126,5 +126,10 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) ->
     // append all planks together
     planks.insert(planks.end(), left_over_pieces.begin(), left_over_pieces.end());
 
-    return { planks, index };
+    calculation_result result;
+    result.all_planks = index;
+    result.left_over = static_cast<int>(left_over_pieces.size());
+    result.uncut = uncut_in_column * uncut_in_row;
+    result.planks = planks;
+    return result;
 }

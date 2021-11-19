@@ -1,5 +1,15 @@
 #pragma once
 
+#include <vector>
+
 #include "plank.h"
 
-auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) -> std::pair<std::vector<Plank>, int>;
+struct calculation_result
+{
+    int all_planks{};
+    int left_over{};
+    int uncut{};
+    std::vector<Plank> planks{};
+};
+
+auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) -> calculation_result;
