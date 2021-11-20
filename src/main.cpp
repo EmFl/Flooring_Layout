@@ -25,10 +25,12 @@ auto main() -> int
 
     SetTargetFPS(TARGET_FPS);
 
+    bool staggered = true;
+
     std::pair<int, int> room_size{ 560, 400 };
     std::pair<int, int> plank_size{ 130, 25 };
 
-    auto result = calculate(room_size, plank_size);
+    auto result = calculate(room_size, plank_size, staggered);
 
     while (!WindowShouldClose())
     {
@@ -82,7 +84,7 @@ auto main() -> int
 
         EndMode2D();
 
-        static constexpr auto blue_rect_height = 360;
+        static constexpr auto blue_rect_height = 380;
 
         DrawRectangle(10, 10, 300, blue_rect_height, { 167u, 199u, 231u, 255u });
         DrawRectangleLines(10, 10, 300, blue_rect_height, BLUE);
@@ -92,43 +94,39 @@ auto main() -> int
         DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, BLACK);
         DrawText("- R to reset Zoom and Position", 40, 80, 10, BLACK);
 
-        static constexpr std::pair<int, int> room_range{ 20, 81 };
-        static constexpr std::pair<int, int> plank_range{ 1, 31 };
-        static constexpr int multiplier = 10;
+        static constexpr std::pair<int, int> room_range{ 200, 801 };
+        static constexpr std::pair<int, int> plank_x_range{ 60, 301 };
+        static constexpr std::pair<int, int> plank_y_range{ 10, 100 };
 
         room_size.first = std::floor(GuiSliderBar(
-                              (Rectangle){ 80, 100, 120, 20 },
-                              "Room X",
-                              std::to_string(room_size.first).c_str(),
-                              static_cast<float>(room_size.first / multiplier),
-                              room_range.first,
-                              room_range.second)) *
-                          multiplier;
+            (Rectangle){ 80, 100, 120, 20 },
+            "Room X",
+            std::to_string(room_size.first).c_str(),
+            static_cast<float>(room_size.first),
+            room_range.first,
+            room_range.second));
         room_size.second = std::floor(GuiSliderBar(
-                               (Rectangle){ 80, 130, 120, 20 },
-                               "Room Y",
-                               std::to_string(room_size.second).c_str(),
-                               static_cast<float>(room_size.second / multiplier),
-                               room_range.first,
-                               room_range.second)) *
-                           multiplier;
+            (Rectangle){ 80, 130, 120, 20 },
+            "Room Y",
+            std::to_string(room_size.second).c_str(),
+            static_cast<float>(room_size.second),
+            room_range.first,
+            room_range.second));
 
         plank_size.first = std::floor(GuiSliderBar(
-                               (Rectangle){ 80, 160, 120, 20 },
-                               "Plank X",
-                               std::to_string(plank_size.first).c_str(),
-                               static_cast<float>(plank_size.first / multiplier),
-                               plank_range.first,
-                               plank_range.second)) *
-                           multiplier;
+            (Rectangle){ 80, 160, 120, 20 },
+            "Plank X",
+            std::to_string(plank_size.first).c_str(),
+            static_cast<float>(plank_size.first),
+            plank_x_range.first,
+            plank_x_range.second));
         plank_size.second = std::floor(GuiSliderBar(
-                                (Rectangle){ 80, 190, 120, 20 },
-                                "Plank Y",
-                                std::to_string(plank_size.second).c_str(),
-                                static_cast<float>(plank_size.second / multiplier),
-                                plank_range.first,
-                                plank_range.second)) *
-                            multiplier;
+            (Rectangle){ 80, 190, 120, 20 },
+            "Plank Y",
+            std::to_string(plank_size.second).c_str(),
+            static_cast<float>(plank_size.second),
+            plank_y_range.first,
+            plank_y_range.second));
 
         std::stringstream ss;
         ss << "Planks needed: " << result.all_planks << '\n'
@@ -136,9 +134,11 @@ auto main() -> int
            << "Uncut planks: " << result.uncut;
         DrawText(ss.str().c_str(), 40, 220, 20, BLACK);
 
-        if (GuiButton((Rectangle){ 40, 320, 120, 30 }, "RECALCULATE"))
+        staggered = GuiCheckBox((Rectangle){ 40, 320, 20, 20 }, "Stagger Pattern", staggered);
+
+        if (GuiButton((Rectangle){ 40, 350, 120, 30 }, "RECALCULATE"))
         {
-            result = calculate(room_size, plank_size);
+            result = calculate(room_size, plank_size, staggered);
         }
 
         EndDrawing();

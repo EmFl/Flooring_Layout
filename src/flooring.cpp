@@ -18,45 +18,66 @@ auto generate_color(int index) -> Color
     return { dist(rng), dist(rng), dist(rng), color_max_value };
 }
 
-auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) -> calculation_result
+auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bool staggered) -> calculation_result
 {
-    // uncut planks
-    const int uncut_in_column = std::floor(static_cast<float>(room_size.second) / static_cast<float>(plank_size.second));
-    const int uncut_in_row = std::floor(static_cast<float>(room_size.first) / static_cast<float>(plank_size.first));
-
-    // slices
-    const int slice_right = room_size.first - (uncut_in_row * plank_size.first);
-    const int slice_bottom = room_size.second - (uncut_in_column * plank_size.second);
+    static const std::vector<int> stagger_pattern{ 0, 40, plank_size.first - 40, 20 };
 
     std::vector<Plank> planks;
     std::vector<Plank> left_over_pieces;
 
     int index = 0;
+    int uncut_planks = 0;
 
     int y = 0;
     int x = 0;
 
-    bool alternate_x_cut = true;
+    int stagger_pattern_index = 0;
 
     while (y < room_size.second && x < room_size.first)
     {
-        // if the plank should be cut
-        const bool x_cut_rule = alternate_x_cut ? ((x + plank_size.first) > room_size.first) : x == 0;
-        const bool is_sliced_vertically = slice_right > 0 && x_cut_rule;
-        const bool is_sliced_horizontally = slice_bottom > 0 && ((y + plank_size.second) > room_size.second);
-        alternate_x_cut = !alternate_x_cut;
+        // check the size of the slice
+        int slice_right = 0;
+        if (x == 0)
+        {
+            slice_right = stagger_pattern.at(stagger_pattern_index);
+        }
+        else if ((x + plank_size.first) > room_size.first)
+        {
+            slice_right = room_size.first - x;
+        }
+
+        // if the plank should be cut vertically
+        const bool is_sliced_vertically = slice_right > 0;
+
+        int slice_bottom = 0;
+        if ((y + plank_size.second) > room_size.second)
+        {
+            slice_bottom = room_size.second - y;
+        }
+
+        // if the plank should be cut horizontally
+        const bool is_sliced_horizontally = slice_bottom > 0;
 
         const std::pair<int, int> plank_position = { x, y };
 
         if (!is_sliced_horizontally && !is_sliced_vertically)
         {
             index++;
+            uncut_planks++;
             planks.emplace_back(index, plank_position, plank_size, generate_color(index));
             x += plank_size.first;
             if (x >= room_size.first)
             {
                 y += plank_size.second;
                 x = 0;
+                if (staggered)
+                {
+                    stagger_pattern_index++;
+                    if (stagger_pattern_index > stagger_pattern.size() - 1)
+                    {
+                        stagger_pattern_index = 0;
+                    }
+                }
             }
             continue;
         }
@@ -118,6 +139,14 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) ->
         {
             y += size_lookup.second;
             x = 0;
+            if (staggered)
+            {
+                stagger_pattern_index++;
+                if (stagger_pattern_index > stagger_pattern.size() - 1)
+                {
+                    stagger_pattern_index = 0;
+                }
+            }
         }
     }
 
@@ -143,7 +172,7 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) ->
     calculation_result result;
     result.all_planks = index;
     result.left_over = static_cast<int>(left_over_pieces.size());
-    result.uncut = uncut_in_column * uncut_in_row;
+    result.uncut = uncut_planks;
     result.planks = planks;
     return result;
 }
