@@ -28,8 +28,8 @@ auto main() -> int
     bool staggered = true;
     bool randomize = false;
 
-    std::pair<int, int> room_size{ 560, 400 };
-    std::pair<int, int> plank_size{ 130, 25 };
+    std::pair<int, int> room_size{ 560, 400 };  // NOLINT
+    std::pair<int, int> plank_size{ 130, 25 };  // NOLINT
 
     auto result = calculate(room_size, plank_size, staggered, randomize);
 
@@ -87,14 +87,17 @@ auto main() -> int
 
         static constexpr auto blue_rect_height = 420;
 
+        // background
         DrawRectangle(10, 10, 300, blue_rect_height, { 167u, 199u, 231u, 255u });
         DrawRectangleLines(10, 10, 300, blue_rect_height, BLUE);
 
+        // info
         DrawText("Controls:", 20, 20, 10, BLACK);
         DrawText("- WSAD or Arrow keys to move", 40, 40, 10, BLACK);
         DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, BLACK);
         DrawText("- R to reset Zoom and Position", 40, 80, 10, BLACK);
 
+        // config sliders
         static constexpr std::pair<int, int> room_range{ 200, 801 };
         static constexpr std::pair<int, int> plank_x_range{ 60, 301 };
         static constexpr std::pair<int, int> plank_y_range{ 10, 100 };
@@ -129,15 +132,18 @@ auto main() -> int
             plank_y_range.first,
             plank_y_range.second));
 
+        // display calculation results
         std::stringstream ss;
         ss << "Planks needed: " << result.all_planks << '\n'
            << "Left over pieces: " << result.left_over << '\n'
            << "Uncut planks: " << result.uncut;
         DrawText(ss.str().c_str(), 40, 220, 20, BLACK);
 
+        // checkboxes
         staggered = GuiCheckBox((Rectangle){ 40, 320, 20, 20 }, "Stagger Pattern", staggered);
         randomize = GuiCheckBox((Rectangle){ 40, 350, 20, 20 }, "Randomize Lengths", randomize);
 
+        // Recalculate button
         if (GuiButton((Rectangle){ 40, 380, 120, 30 }, "RECALCULATE"))
         {
             result = calculate(room_size, plank_size, staggered, randomize);

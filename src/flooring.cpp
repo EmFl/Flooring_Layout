@@ -56,7 +56,8 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bo
         }
         else if (randomize_lengths)
         {
-            slice_right = generate_lengths(20, plank_size.first);
+            static constexpr auto max_random_slice = 50;
+            slice_right = generate_lengths(plank_size.first - max_random_slice, plank_size.first);
         }
 
         // if the plank should be cut vertically
