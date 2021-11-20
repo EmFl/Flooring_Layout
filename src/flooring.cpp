@@ -7,28 +7,27 @@
 
 #include "plank.h"
 
-auto generate_color(int index) -> Color
+[[nodiscard]] inline auto generate_color(std::mt19937 &engine, int index) -> Color
 {
     static constexpr auto color_max_value = 255u;
     static constexpr auto color_min_value = 100u;
 
-    static std::random_device dev;
-    static std::mt19937 rng(dev());
     static std::uniform_int_distribution<unsigned char> dist(color_min_value, color_max_value);
-    return { dist(rng), dist(rng), dist(rng), color_max_value };
+    return { dist(engine), dist(engine), dist(engine), color_max_value };
 }
 
-auto generate_lengths(int start, int end) -> int
+[[nodiscard]] inline auto generate_lengths(std::mt19937 &engine, int start, int end) -> int
 {
-    static std::random_device dev;
-    static std::mt19937 rng(dev());
     static std::uniform_int_distribution<int> dist(start, end);
-    return dist(rng);
+    return dist(engine);
 }
 
 auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bool staggered, bool randomize_lengths)
     -> calculation_result
 {
+    static std::random_device dev;
+    static std::mt19937 rng(dev());
+
     static const std::vector<int> stagger_pattern{ 0, 50, plank_size.first - 30, 30, plank_size.first - 20, 20 };
 
     std::vector<Plank> planks;
@@ -57,7 +56,7 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bo
         else if (randomize_lengths)
         {
             static constexpr auto max_random_slice = 50;
-            slice_right = generate_lengths(plank_size.first - max_random_slice, plank_size.first);
+            slice_right = generate_lengths(rng, plank_size.first - max_random_slice, plank_size.first);
         }
 
         // if the plank should be cut vertically
@@ -78,7 +77,7 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bo
         {
             index++;
             uncut_planks++;
-            planks.emplace_back(index, plank_position, plank_size, generate_color(index));
+            planks.emplace_back(index, plank_position, plank_size, generate_color(rng, index));
             x += plank_size.first;
             if (x >= room_size.first)
             {
@@ -125,7 +124,7 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bo
         // there is no usable slice in left overs, get a new plank
         if (!found)
         {
-            const auto color = generate_color(index);
+            const auto color = generate_color(rng, index);
             // make a new plank
             index++;
             planks.emplace_back(index, plank_position, size_lookup, color);
