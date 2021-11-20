@@ -31,6 +31,11 @@ auto main() -> int
     std::pair<int, int> room_size{ 560, 400 };  // NOLINT
     std::pair<int, int> plank_size{ 130, 25 };  // NOLINT
 
+    // config sliders
+    static constexpr std::pair<int, int> room_range{ 200, 801 };
+    static constexpr std::pair<int, int> plank_x_range{ 60, 301 };
+    static constexpr std::pair<int, int> plank_y_range{ 10, 100 };
+
     auto result = calculate(room_size, plank_size, staggered, randomize);
 
     while (!WindowShouldClose())
@@ -73,6 +78,44 @@ auto main() -> int
             camera.target = camera_target;
         }
 
+        // Increase / Decrease room size
+        // U I O P - fine-tune room size
+        if (IsKeyPressed(KEY_U))
+        {
+            room_size.first = std::max(room_range.first, room_size.first - 1);
+        }
+        if (IsKeyPressed(KEY_I))
+        {
+            room_size.first = std::min(room_range.second, room_size.first + 1);
+        }
+        if (IsKeyPressed(KEY_O))
+        {
+            room_size.second = std::max(room_range.first, room_size.second - 1);
+        }
+        if (IsKeyPressed(KEY_P))
+        {
+            room_size.second = std::min(room_range.second, room_size.second + 1);
+        }
+
+        // Increase / Decrease plank size
+        // H J K L - fine-tune plank size
+        if (IsKeyPressed(KEY_H))
+        {
+            plank_size.first = std::max(plank_x_range.first, plank_size.first - 1);
+        }
+        if (IsKeyPressed(KEY_J))
+        {
+            plank_size.first = std::min(plank_x_range.second, plank_size.first + 1);
+        }
+        if (IsKeyPressed(KEY_K))
+        {
+            plank_size.second = std::max(plank_y_range.first, plank_size.second - 1);
+        }
+        if (IsKeyPressed(KEY_L))
+        {
+            plank_size.second = std::min(plank_y_range.second, plank_size.second + 1);
+        }
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -85,7 +128,7 @@ auto main() -> int
 
         EndMode2D();
 
-        static constexpr auto blue_rect_height = 420;
+        static constexpr auto blue_rect_height = 460;
 
         // background
         DrawRectangle(10, 10, 300, blue_rect_height, { 167u, 199u, 231u, 255u });
@@ -96,21 +139,18 @@ auto main() -> int
         DrawText("- WSAD or Arrow keys to move", 40, 40, 10, BLACK);
         DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, BLACK);
         DrawText("- R to reset Zoom and Position", 40, 80, 10, BLACK);
-
-        // config sliders
-        static constexpr std::pair<int, int> room_range{ 200, 801 };
-        static constexpr std::pair<int, int> plank_x_range{ 60, 301 };
-        static constexpr std::pair<int, int> plank_y_range{ 10, 100 };
+        DrawText("- UIOP to fine-tune room size", 40, 100, 10, BLACK);
+        DrawText("- HJKL to fine-tune plank size", 40, 120, 10, BLACK);
 
         room_size.first = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 100, 120, 20 },
+            (Rectangle){ 80, 140, 120, 20 },
             "Room X",
             std::to_string(room_size.first).c_str(),
             static_cast<float>(room_size.first),
             room_range.first,
             room_range.second));
         room_size.second = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 130, 120, 20 },
+            (Rectangle){ 80, 170, 120, 20 },
             "Room Y",
             std::to_string(room_size.second).c_str(),
             static_cast<float>(room_size.second),
@@ -118,14 +158,14 @@ auto main() -> int
             room_range.second));
 
         plank_size.first = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 160, 120, 20 },
+            (Rectangle){ 80, 200, 120, 20 },
             "Plank X",
             std::to_string(plank_size.first).c_str(),
             static_cast<float>(plank_size.first),
             plank_x_range.first,
             plank_x_range.second));
         plank_size.second = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 190, 120, 20 },
+            (Rectangle){ 80, 230, 120, 20 },
             "Plank Y",
             std::to_string(plank_size.second).c_str(),
             static_cast<float>(plank_size.second),
@@ -137,14 +177,14 @@ auto main() -> int
         ss << "Planks needed: " << result.all_planks << '\n'
            << "Left over pieces: " << result.left_over << '\n'
            << "Uncut planks: " << result.uncut;
-        DrawText(ss.str().c_str(), 40, 220, 20, BLACK);
+        DrawText(ss.str().c_str(), 40, 270, 20, BLACK);
 
         // checkboxes
-        staggered = GuiCheckBox((Rectangle){ 40, 320, 20, 20 }, "Stagger Pattern", staggered);
-        randomize = GuiCheckBox((Rectangle){ 40, 350, 20, 20 }, "Randomize Lengths", randomize);
+        staggered = GuiCheckBox((Rectangle){ 40, 370, 20, 20 }, "Stagger Pattern", staggered);
+        randomize = GuiCheckBox((Rectangle){ 40, 400, 20, 20 }, "Randomize Lengths", randomize);
 
         // Recalculate button
-        if (GuiButton((Rectangle){ 40, 380, 120, 30 }, "RECALCULATE"))
+        if (GuiButton((Rectangle){ 40, 430, 120, 30 }, "RECALCULATE"))
         {
             result = calculate(room_size, plank_size, staggered, randomize);
         }
