@@ -20,7 +20,7 @@ struct Plank
 
     auto draw() const -> void
     {
-        static constexpr auto fontSize = 54;
+        static constexpr auto fontSize = 24;
         static constexpr auto drawScaleFactor = 4;
         static constexpr auto textOffset = 6;
 

@@ -28,82 +28,96 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) ->
     const int slice_right = room_size.first - (uncut_in_row * plank_size.first);
     const int slice_bottom = room_size.second - (uncut_in_column * plank_size.second);
 
-    // total rows and cols
-    const int rows = slice_bottom > 0 ? 1 + uncut_in_column : uncut_in_column;
-    const int cols = slice_right > 0 ? 1 + uncut_in_row : uncut_in_row;
-
     std::vector<Plank> planks;
     std::vector<Plank> left_over_pieces;
 
     int index = 0;
 
-    for (size_t y = 0; y < rows; ++y)
+    int y = 0;
+    int x = 0;
+
+    bool alternate_x_cut = true;
+
+    while (y < room_size.second && x < room_size.first)
     {
-        for (size_t x = 0; x < cols; ++x)
+        // if the plank should be cut
+        const bool x_cut_rule = alternate_x_cut ? ((x + plank_size.first) > room_size.first) : x == 0;
+        const bool is_sliced_vertically = slice_right > 0 && x_cut_rule;
+        const bool is_sliced_horizontally = slice_bottom > 0 && ((y + plank_size.second) > room_size.second);
+        alternate_x_cut = !alternate_x_cut;
+
+        const std::pair<int, int> plank_position = { x, y };
+
+        if (!is_sliced_horizontally && !is_sliced_vertically)
         {
-            // if the plank should be cut
-            bool is_sliced_vertically = slice_right > 0 && x == cols - 1;
-            bool is_sliced_horizontally = slice_bottom > 0 && y == rows - 1;
-
-            const std::pair<int, int> plank_position = { x * plank_size.first, y * plank_size.second };
-
-            if (!is_sliced_horizontally && !is_sliced_vertically)
+            index++;
+            planks.emplace_back(index, plank_position, plank_size, generate_color(index));
+            x += plank_size.first;
+            if (x >= room_size.first)
             {
-                index++;
-                planks.emplace_back(index, plank_position, plank_size, generate_color(index));
-                continue;
+                y += plank_size.second;
+                x = 0;
             }
+            continue;
+        }
 
-            // dimensions we are looking for
-            std::pair<int, int> size_lookup{ is_sliced_vertically ? slice_right : plank_size.first,
-                                             is_sliced_horizontally ? slice_bottom : plank_size.second };
+        // dimensions we are looking for
+        std::pair<int, int> size_lookup{ is_sliced_vertically ? slice_right : plank_size.first,
+                                         is_sliced_horizontally ? slice_bottom : plank_size.second };
 
-            // check if we have a usable plank piece in the left overs
-            bool found = false;
-            for (auto &lo : left_over_pieces)
+        // check if we have a usable plank piece in the left overs
+        bool found = false;
+        for (auto &lo : left_over_pieces)
+        {
+            if (lo.dimensions_ >= size_lookup)
             {
-                if (lo.dimensions_ >= size_lookup)
+                // slice off the part that is needed
+                if (is_sliced_horizontally)
                 {
-                    // slice off the part that is needed
-                    if (is_sliced_horizontally)
-                    {
-                        lo.dimensions_.second -= size_lookup.second;
-                    }
-                    if (is_sliced_vertically)
-                    {
-                        lo.dimensions_.first -= size_lookup.first;
-                    }
-                    // store the sliced of part
-                    planks.emplace_back(lo.id_, plank_position, size_lookup, lo.color_);
-                    found = true;
-                    break;
+                    lo.dimensions_.second -= size_lookup.second;
                 }
+                if (is_sliced_vertically)
+                {
+                    lo.dimensions_.first -= size_lookup.first;
+                }
+                // store the sliced of part
+                planks.emplace_back(lo.id_, plank_position, size_lookup, lo.color_);
+                found = true;
+                break;
             }
+        }
 
-            // there is no usable slice in left overs, get a new plank
-            if (!found)
-            {
-                const auto color = generate_color(index);
-                // make a new plank
-                index++;
-                planks.emplace_back(index, plank_position, size_lookup, color);
-                // store the remaining part in the left overs
+        // there is no usable slice in left overs, get a new plank
+        if (!found)
+        {
+            const auto color = generate_color(index);
+            // make a new plank
+            index++;
+            planks.emplace_back(index, plank_position, size_lookup, color);
+            // store the remaining part in the left overs
 
-                const std::pair<int, int> left_over_dimensions = {
-                    is_sliced_vertically ? plank_size.first - size_lookup.first : plank_size.first,
-                    is_sliced_horizontally ? plank_size.second - size_lookup.second : plank_size.second
-                };
-                const std::pair<int, int> empty_pos{ 0, 0 };
-                left_over_pieces.emplace_back(index, empty_pos, left_over_dimensions, color);
-            }
+            const std::pair<int, int> left_over_dimensions = {
+                is_sliced_vertically ? plank_size.first - size_lookup.first : plank_size.first,
+                is_sliced_horizontally ? plank_size.second - size_lookup.second : plank_size.second
+            };
+            const std::pair<int, int> empty_pos{ 0, 0 };
+            left_over_pieces.emplace_back(index, empty_pos, left_over_dimensions, color);
+        }
 
-            // cleanup - erase all pieces with a dimension of 0
-            left_over_pieces.erase(
-                std::remove_if(
-                    left_over_pieces.begin(),
-                    left_over_pieces.end(),
-                    [](auto &p) { return p.dimensions_.first <= 0 || p.dimensions_.second <= 0; }),
-                left_over_pieces.end());
+        // cleanup - erase all pieces with a dimension of 0
+        left_over_pieces.erase(
+            std::remove_if(
+                left_over_pieces.begin(),
+                left_over_pieces.end(),
+                [](auto &p) { return p.dimensions_.first <= 0 || p.dimensions_.second <= 0; }),
+            left_over_pieces.end());
+
+        // increment x and y
+        x += size_lookup.first;
+        if (x >= room_size.first)
+        {
+            y += size_lookup.second;
+            x = 0;
         }
     }
 
@@ -114,9 +128,9 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size) ->
     for (auto &lo : left_over_pieces)
     {
         lo.position_ = { left_over_col * (plank_size.first + left_over_offset),
-                         (rows * plank_size.second) + (left_over_row * (plank_size.second + left_over_offset)) };
+                         room_size.second + (left_over_row * (plank_size.second + left_over_offset)) };
         left_over_col++;
-        if (left_over_col > cols)
+        if (left_over_col > 4)
         {
             left_over_col = 0;
             left_over_row++;
