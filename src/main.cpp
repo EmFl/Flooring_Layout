@@ -84,13 +84,13 @@ auto main() -> int
 
         static constexpr auto blue_rect_height = 360;
 
-        DrawRectangle(10, 10, 300, blue_rect_height, Fade(SKYBLUE, 0.5f));
+        DrawRectangle(10, 10, 300, blue_rect_height, { 167u, 199u, 231u, 255u });
         DrawRectangleLines(10, 10, 300, blue_rect_height, BLUE);
 
         DrawText("Controls:", 20, 20, 10, BLACK);
-        DrawText("- WSAD or Arrow keys to move", 40, 40, 10, DARKGRAY);
-        DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, DARKGRAY);
-        DrawText("- R to reset Zoom and Position", 40, 80, 10, DARKGRAY);
+        DrawText("- WSAD or Arrow keys to move", 40, 40, 10, BLACK);
+        DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, BLACK);
+        DrawText("- R to reset Zoom and Position", 40, 80, 10, BLACK);
 
         static constexpr std::pair<int, int> room_range{ 20, 81 };
         static constexpr std::pair<int, int> plank_range{ 1, 31 };
