@@ -18,9 +18,18 @@ auto generate_color(int index) -> Color
     return { dist(rng), dist(rng), dist(rng), color_max_value };
 }
 
-auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bool staggered) -> calculation_result
+auto generate_lengths(int start, int end) -> int
 {
-    static const std::vector<int> stagger_pattern{ 0, 40, plank_size.first - 40, 20 };
+    static std::random_device dev;
+    static std::mt19937 rng(dev());
+    static std::uniform_int_distribution<int> dist(start, end);
+    return dist(rng);
+}
+
+auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bool staggered, bool randomize_lengths)
+    -> calculation_result
+{
+    static const std::vector<int> stagger_pattern{ 0, 50, plank_size.first - 30, 30, plank_size.first - 20, 20 };
 
     std::vector<Plank> planks;
     std::vector<Plank> left_over_pieces;
@@ -44,6 +53,10 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bo
         else if ((x + plank_size.first) > room_size.first)
         {
             slice_right = room_size.first - x;
+        }
+        else if (randomize_lengths)
+        {
+            slice_right = generate_lengths(20, plank_size.first);
         }
 
         // if the plank should be cut vertically

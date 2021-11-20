@@ -26,11 +26,12 @@ auto main() -> int
     SetTargetFPS(TARGET_FPS);
 
     bool staggered = true;
+    bool randomize = false;
 
     std::pair<int, int> room_size{ 560, 400 };
     std::pair<int, int> plank_size{ 130, 25 };
 
-    auto result = calculate(room_size, plank_size, staggered);
+    auto result = calculate(room_size, plank_size, staggered, randomize);
 
     while (!WindowShouldClose())
     {
@@ -84,7 +85,7 @@ auto main() -> int
 
         EndMode2D();
 
-        static constexpr auto blue_rect_height = 380;
+        static constexpr auto blue_rect_height = 420;
 
         DrawRectangle(10, 10, 300, blue_rect_height, { 167u, 199u, 231u, 255u });
         DrawRectangleLines(10, 10, 300, blue_rect_height, BLUE);
@@ -135,10 +136,11 @@ auto main() -> int
         DrawText(ss.str().c_str(), 40, 220, 20, BLACK);
 
         staggered = GuiCheckBox((Rectangle){ 40, 320, 20, 20 }, "Stagger Pattern", staggered);
+        randomize = GuiCheckBox((Rectangle){ 40, 350, 20, 20 }, "Randomize Lengths", randomize);
 
-        if (GuiButton((Rectangle){ 40, 350, 120, 30 }, "RECALCULATE"))
+        if (GuiButton((Rectangle){ 40, 380, 120, 30 }, "RECALCULATE"))
         {
-            result = calculate(room_size, plank_size, staggered);
+            result = calculate(room_size, plank_size, staggered, randomize);
         }
 
         EndDrawing();

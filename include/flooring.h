@@ -12,4 +12,5 @@ struct calculation_result
     std::vector<Plank> planks{};
 };
 
-auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bool staggered) -> calculation_result;
+auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bool staggered, bool randomize_lengths)
+    -> calculation_result;
