@@ -3,6 +3,7 @@
 #include <raylib.h>
 
 #include <random>
+#include <stdexcept>
 #include <vector>
 
 #include "plank.h"
@@ -45,7 +46,7 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bo
     {
         // check the size of the slice
         int slice_right = 0;
-        if (x == 0)
+        if (x == 0 && staggered)
         {
             slice_right = stagger_pattern.at(stagger_pattern_index);
         }
@@ -55,8 +56,20 @@ auto calculate(std::pair<int, int> room_size, std::pair<int, int> plank_size, bo
         }
         else if (randomize_lengths)
         {
-            static constexpr auto max_random_slice = 50;
-            slice_right = generate_lengths(rng, plank_size.first - max_random_slice, plank_size.first);
+            static constexpr auto min_random_slice = 40;
+            slice_right = generate_lengths(rng, min_random_slice, plank_size.first);
+
+            // clamp the random value
+            if ((x + slice_right) > room_size.first)
+            {
+                slice_right = slice_right - ((x + slice_right) - room_size.first);
+            }
+        }
+
+        // check the row length again
+        if ((x + slice_right) > room_size.first)
+        {
+            throw std::length_error("Error: Row width exceeds room size.");
         }
 
         // if the plank should be cut vertically
