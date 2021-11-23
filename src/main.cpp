@@ -28,13 +28,8 @@ auto main() -> int
     bool staggered = true;
     bool randomize = false;
 
-    std::pair<int, int> room_size{ 560, 400 };  // NOLINT
-    std::pair<int, int> plank_size{ 130, 25 };  // NOLINT
-
-    // config sliders
-    static constexpr std::pair<int, int> room_range{ 200, 801 };
-    static constexpr std::pair<int, int> plank_x_range{ 60, 301 };
-    static constexpr std::pair<int, int> plank_y_range{ 10, 100 };
+    std::pair<int, int> room_size{ DEFAULT_ROOM_SIZE };
+    std::pair<int, int> plank_size{ DEFAULT_PLANK_SIZE };
 
     Flooring flooring;
     flooring.configure(room_size, plank_size, staggered, randomize);
@@ -84,38 +79,38 @@ auto main() -> int
         // U I O P - fine-tune room size
         if (IsKeyPressed(KEY_U))
         {
-            room_size.first = std::max(room_range.first, room_size.first - 1);
+            room_size.first = std::max(SLIDER_ROOM_RANGE.first, room_size.first - 1);
         }
         if (IsKeyPressed(KEY_I))
         {
-            room_size.first = std::min(room_range.second, room_size.first + 1);
+            room_size.first = std::min(SLIDER_ROOM_RANGE.second, room_size.first + 1);
         }
         if (IsKeyPressed(KEY_O))
         {
-            room_size.second = std::max(room_range.first, room_size.second - 1);
+            room_size.second = std::max(SLIDER_ROOM_RANGE.first, room_size.second - 1);
         }
         if (IsKeyPressed(KEY_P))
         {
-            room_size.second = std::min(room_range.second, room_size.second + 1);
+            room_size.second = std::min(SLIDER_ROOM_RANGE.second, room_size.second + 1);
         }
 
         // Increase / Decrease plank size
         // H J K L - fine-tune plank size
         if (IsKeyPressed(KEY_H))
         {
-            plank_size.first = std::max(plank_x_range.first, plank_size.first - 1);
+            plank_size.first = std::max(SLIDER_PLANK_X_RANGE.first, plank_size.first - 1);
         }
         if (IsKeyPressed(KEY_J))
         {
-            plank_size.first = std::min(plank_x_range.second, plank_size.first + 1);
+            plank_size.first = std::min(SLIDER_PLANK_X_RANGE.second, plank_size.first + 1);
         }
         if (IsKeyPressed(KEY_K))
         {
-            plank_size.second = std::max(plank_y_range.first, plank_size.second - 1);
+            plank_size.second = std::max(SLIDER_PLANK_Y_RANGE.first, plank_size.second - 1);
         }
         if (IsKeyPressed(KEY_L))
         {
-            plank_size.second = std::min(plank_y_range.second, plank_size.second + 1);
+            plank_size.second = std::min(SLIDER_PLANK_Y_RANGE.second, plank_size.second + 1);
         }
 
         BeginDrawing();
@@ -135,9 +130,10 @@ auto main() -> int
         EndMode2D();
 
         static constexpr auto blue_rect_height = 460;
+        static constexpr Color rect_color = { 167u, 199u, 231u, 255u };
 
         // background
-        DrawRectangle(10, 10, 300, blue_rect_height, { 167u, 199u, 231u, 255u });
+        DrawRectangle(10, 10, 300, blue_rect_height, rect_color);
         DrawRectangleLines(10, 10, 300, blue_rect_height, BLUE);
 
         // info
@@ -148,35 +144,36 @@ auto main() -> int
         DrawText("- UIOP to fine-tune room size", 40, 100, 10, BLACK);
         DrawText("- HJKL to fine-tune plank size", 40, 120, 10, BLACK);
 
+        // sliders
         room_size.first = std::floor(GuiSliderBar(
             (Rectangle){ 80, 140, 120, 20 },
             "Room X",
             std::to_string(room_size.first).c_str(),
             static_cast<float>(room_size.first),
-            room_range.first,
-            room_range.second));
+            SLIDER_ROOM_RANGE.first,
+            SLIDER_ROOM_RANGE.second));
         room_size.second = std::floor(GuiSliderBar(
             (Rectangle){ 80, 170, 120, 20 },
             "Room Y",
             std::to_string(room_size.second).c_str(),
             static_cast<float>(room_size.second),
-            room_range.first,
-            room_range.second));
+            SLIDER_ROOM_RANGE.first,
+            SLIDER_ROOM_RANGE.second));
 
         plank_size.first = std::floor(GuiSliderBar(
             (Rectangle){ 80, 200, 120, 20 },
             "Plank X",
             std::to_string(plank_size.first).c_str(),
             static_cast<float>(plank_size.first),
-            plank_x_range.first,
-            plank_x_range.second));
+            SLIDER_PLANK_X_RANGE.first,
+            SLIDER_PLANK_X_RANGE.second));
         plank_size.second = std::floor(GuiSliderBar(
             (Rectangle){ 80, 230, 120, 20 },
             "Plank Y",
             std::to_string(plank_size.second).c_str(),
             static_cast<float>(plank_size.second),
-            plank_y_range.first,
-            plank_y_range.second));
+            SLIDER_PLANK_Y_RANGE.first,
+            SLIDER_PLANK_Y_RANGE.second));
 
         // display calculation results
         std::stringstream ss;

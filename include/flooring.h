@@ -10,6 +10,9 @@
 
 #include "plank.h"
 
+inline constexpr size_t STAGGER_PATTERN_SIZE = 6;
+inline constexpr std::array<int, STAGGER_PATTERN_SIZE> STAGGER_PATTERN{ { 0, 50, -30, 30, -20, 20 } };
+
 struct Result
 {
     int all_planks;
@@ -18,9 +21,6 @@ struct Result
     std::vector<Plank> planks;
     std::vector<Plank> left_over_pieces;
 };
-
-inline constexpr size_t kStaggerPatternSize = 6;
-inline constexpr std::array<int, kStaggerPatternSize> kStaggerPattern{ { 0, 50, -30, 30, -20, 20 } };
 
 class Flooring
 {

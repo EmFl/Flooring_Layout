@@ -21,7 +21,7 @@ auto Flooring::calculate_slice() -> std::pair<int, int>
 
     if (current_position_.first == 0 && staggered_)
     {
-        const auto stagger_value = kStaggerPattern.at(stagger_pattern_index_);
+        const auto stagger_value = STAGGER_PATTERN.at(stagger_pattern_index_);
         slice.first = (stagger_value < 0) ? plank_size_.first + stagger_value : stagger_value;
     }
     else if ((current_position_.first + plank_size_.first) > room_size_.first)
@@ -69,7 +69,7 @@ void Flooring::increment_position(const std::pair<int, int> &offset)
         if (staggered_)
         {
             stagger_pattern_index_++;
-            if (stagger_pattern_index_ > kStaggerPatternSize - 1)
+            if (stagger_pattern_index_ > STAGGER_PATTERN_SIZE - 1)
             {
                 stagger_pattern_index_ = 0;
             }
