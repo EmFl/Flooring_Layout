@@ -36,7 +36,9 @@ auto main() -> int
     static constexpr std::pair<int, int> plank_x_range{ 60, 301 };
     static constexpr std::pair<int, int> plank_y_range{ 10, 100 };
 
-    auto result = calculate(room_size, plank_size, staggered, randomize);
+    Flooring flooring;
+    flooring.configure(room_size, plank_size, staggered, randomize);
+    auto result = flooring.calculate();
 
     while (!WindowShouldClose())
     {
@@ -125,6 +127,10 @@ auto main() -> int
         {
             plank.draw();
         }
+        for (const auto& piece : result.left_over_pieces)
+        {
+            piece.draw();
+        }
 
         EndMode2D();
 
@@ -186,7 +192,8 @@ auto main() -> int
         // Recalculate button
         if (GuiButton((Rectangle){ 40, 430, 120, 30 }, "RECALCULATE"))
         {
-            result = calculate(room_size, plank_size, staggered, randomize);
+            flooring.configure(room_size, plank_size, staggered, randomize);
+            result = flooring.calculate();
         }
 
         EndDrawing();
