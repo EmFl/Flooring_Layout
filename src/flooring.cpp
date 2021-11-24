@@ -110,27 +110,24 @@ auto Flooring::find_and_place_usable_piece(
     bool is_sliced_vertically,
     const std::pair<int, int> &size_lookup) -> bool
 {
-    bool found = false;
-    for (auto &lo : left_over_pieces_)
+    auto piece = std::find_if(
+        begin(left_over_pieces_), end(left_over_pieces_), [&](const auto &p) { return p.dimensions_ >= size_lookup; });
+    if (piece == std::end(left_over_pieces_))
     {
-        if (lo.dimensions_ >= size_lookup)
-        {
-            // slice off the part that is needed
-            if (is_sliced_horizontally)
-            {
-                lo.dimensions_.second -= size_lookup.second;
-            }
-            if (is_sliced_vertically)
-            {
-                lo.dimensions_.first -= size_lookup.first;
-            }
-            // store the sliced of part
-            planks_.emplace_back(lo.id_, current_position_, size_lookup, lo.color_);
-            found = true;
-            break;
-        }
+        return false;
     }
-    return found;
+
+    if (is_sliced_horizontally)
+    {
+        (*piece).dimensions_.second -= size_lookup.second;
+    }
+    if (is_sliced_vertically)
+    {
+        (*piece).dimensions_.first -= size_lookup.first;
+    }
+
+    planks_.emplace_back((*piece).id_, current_position_, size_lookup, (*piece).color_);
+    return true;
 }
 
 auto Flooring::calculate() -> Result

@@ -2,6 +2,7 @@
 
 #include <raylib.h>
 
+#include <algorithm>
 #include <array>
 #include <random>
 #include <stdexcept>
