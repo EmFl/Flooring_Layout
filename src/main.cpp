@@ -130,45 +130,59 @@ auto main() -> int
         EndMode2D();
 
         static constexpr auto blue_rect_height = 460;
+        static constexpr auto blue_rect_width = 300;
         static constexpr Color rect_color = { 167u, 199u, 231u, 255u };
+        static constexpr auto blue_rect_pos_x = 10;
+        static constexpr auto blue_rect_pos_y = 10;
 
         // background
-        DrawRectangle(10, 10, 300, blue_rect_height, rect_color);
-        DrawRectangleLines(10, 10, 300, blue_rect_height, BLUE);
+        DrawRectangle(blue_rect_pos_x, blue_rect_pos_y, blue_rect_width, blue_rect_height, rect_color);
+        DrawRectangleLines(blue_rect_pos_x, blue_rect_pos_y, blue_rect_width, blue_rect_height, BLUE);
 
         // info
-        DrawText("Controls:", 20, 20, 10, BLACK);
-        DrawText("- WSAD or Arrow keys to move", 40, 40, 10, BLACK);
-        DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, BLACK);
-        DrawText("- R to reset Zoom and Position", 40, 80, 10, BLACK);
-        DrawText("- UIOP to fine-tune room size", 40, 100, 10, BLACK);
-        DrawText("- HJKL to fine-tune plank size", 40, 120, 10, BLACK);
+        static constexpr auto text_x = 40;
+        static constexpr auto standard_text_font_size = 10;
+
+        DrawText("Controls:", text_x, 20, standard_text_font_size, BLACK);                        // NOLINT
+        DrawText("- WSAD or Arrow keys to move", text_x, 40, standard_text_font_size, BLACK);     // NOLINT
+        DrawText("- Mouse Wheel to Zoom in-out", text_x, 60, standard_text_font_size, BLACK);     // NOLINT
+        DrawText("- R to reset Zoom and Position", text_x, 80, standard_text_font_size, BLACK);   // NOLINT
+        DrawText("- UIOP to fine-tune room size", text_x, 100, standard_text_font_size, BLACK);   // NOLINT
+        DrawText("- HJKL to fine-tune plank size", text_x, 120, standard_text_font_size, BLACK);  // NOLINT
 
         // sliders
+        static constexpr auto slider_left_margin = 80;
+        static constexpr auto slider_width = 120;
+        static constexpr auto slider_height = 20;
+
+        static constexpr Rectangle slider1_rect{ slider_left_margin, 140, slider_width, slider_height };
+        static constexpr Rectangle slider2_rect{ slider_left_margin, 170, slider_width, slider_height };
+        static constexpr Rectangle slider3_rect{ slider_left_margin, 200, slider_width, slider_height };
+        static constexpr Rectangle slider4_rect{ slider_left_margin, 230, slider_width, slider_height };
+
         room_size.first = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 140, 120, 20 },
+            slider1_rect,
             "Room X",
             std::to_string(room_size.first).c_str(),
             static_cast<float>(room_size.first),
             SLIDER_ROOM_RANGE.first,
             SLIDER_ROOM_RANGE.second));
         room_size.second = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 170, 120, 20 },
+            slider2_rect,
             "Room Y",
             std::to_string(room_size.second).c_str(),
             static_cast<float>(room_size.second),
             SLIDER_ROOM_RANGE.first,
             SLIDER_ROOM_RANGE.second));
-
         plank_size.first = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 200, 120, 20 },
+            slider3_rect,
             "Plank X",
             std::to_string(plank_size.first).c_str(),
             static_cast<float>(plank_size.first),
             SLIDER_PLANK_X_RANGE.first,
             SLIDER_PLANK_X_RANGE.second));
         plank_size.second = std::floor(GuiSliderBar(
-            (Rectangle){ 80, 230, 120, 20 },
+            slider4_rect,
             "Plank Y",
             std::to_string(plank_size.second).c_str(),
             static_cast<float>(plank_size.second),
@@ -180,14 +194,19 @@ auto main() -> int
         ss << "Planks needed: " << result.all_planks << '\n'
            << "Left over pieces: " << result.left_over << '\n'
            << "Uncut planks: " << result.uncut;
-        DrawText(ss.str().c_str(), 40, 270, 20, BLACK);
+        static constexpr auto result_text_size = 20;
+        static constexpr std::pair<int, int> result_text_position{ 40, 270 };
+        DrawText(ss.str().c_str(), result_text_position.first, result_text_position.second, result_text_size, BLACK);
 
         // checkboxes
-        staggered = GuiCheckBox((Rectangle){ 40, 370, 20, 20 }, "Stagger Pattern", staggered);
-        randomize = GuiCheckBox((Rectangle){ 40, 400, 20, 20 }, "Randomize Lengths", randomize);
+        static constexpr Rectangle checkbox1_rect{ 40, 370, 20, 20 };
+        static constexpr Rectangle checkbox2_rect{ 40, 400, 20, 20 };
+        staggered = GuiCheckBox(checkbox1_rect, "Stagger Pattern", staggered);
+        randomize = GuiCheckBox(checkbox2_rect, "Randomize Lengths", randomize);
 
         // Recalculate button
-        if (GuiButton((Rectangle){ 40, 430, 120, 30 }, "RECALCULATE"))
+        static constexpr Rectangle recalculate_button_rect{ 40, 430, 120, 30 };
+        if (GuiButton(recalculate_button_rect, "RECALCULATE"))
         {
             flooring.configure(room_size, plank_size, staggered, randomize);
             result = flooring.calculate();
