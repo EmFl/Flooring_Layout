@@ -35,6 +35,8 @@
 .vscode
 .idea
 .vs
+.cproject
+.project
 
 # cmake build
 build/

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <random>
+#include <string>
 #include <stdexcept>
 #include <utility>
 #include <vector>

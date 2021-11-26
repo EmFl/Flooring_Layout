@@ -30,10 +30,14 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++ -std=c++17 -ggdb -Wall -Wextra -Wshadow -pedantic ")
 
 # This is the main part:
 
 set(SOURCES
+	include/config.h
+	include/flooring.h
+	include/plank.h
     src/flooring.cpp
     src/main.cpp)
 

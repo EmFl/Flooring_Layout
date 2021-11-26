@@ -2,6 +2,9 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <utility>
+#include <cmath>
+#include <algorithm>
 
 #include "config.h"
 #include "flooring.h"
@@ -28,8 +31,8 @@ auto main() -> int
     bool staggered = true;
     bool randomize = false;
 
-    std::pair<int, int> room_size{ DEFAULT_ROOM_SIZE };
-    std::pair<int, int> plank_size{ DEFAULT_PLANK_SIZE };
+    std::pair<int, int> room_size{DEFAULT_ROOM_SIZE};
+    std::pair<int, int> plank_size{DEFAULT_PLANK_SIZE};
 
     Flooring flooring;
     flooring.configure(room_size, plank_size, staggered, randomize);
@@ -115,7 +118,6 @@ auto main() -> int
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
         BeginMode2D(camera);
 
         for (const auto& plank : result.planks)
@@ -165,29 +167,29 @@ auto main() -> int
             "Room X",
             std::to_string(room_size.first).c_str(),
             static_cast<float>(room_size.first),
-            SLIDER_ROOM_RANGE.first,
-            SLIDER_ROOM_RANGE.second));
+            static_cast<float>(SLIDER_ROOM_RANGE.first),
+            static_cast<float>(SLIDER_ROOM_RANGE.second)));
         room_size.second = std::floor(GuiSliderBar(
             slider2_rect,
             "Room Y",
             std::to_string(room_size.second).c_str(),
             static_cast<float>(room_size.second),
-            SLIDER_ROOM_RANGE.first,
-            SLIDER_ROOM_RANGE.second));
+            static_cast<float>(SLIDER_ROOM_RANGE.first),
+            static_cast<float>(SLIDER_ROOM_RANGE.second)));
         plank_size.first = std::floor(GuiSliderBar(
             slider3_rect,
             "Plank X",
             std::to_string(plank_size.first).c_str(),
             static_cast<float>(plank_size.first),
-            SLIDER_PLANK_X_RANGE.first,
-            SLIDER_PLANK_X_RANGE.second));
+            static_cast<float>(SLIDER_PLANK_X_RANGE.first),
+            static_cast<float>(SLIDER_PLANK_X_RANGE.second)));
         plank_size.second = std::floor(GuiSliderBar(
             slider4_rect,
             "Plank Y",
             std::to_string(plank_size.second).c_str(),
             static_cast<float>(plank_size.second),
-            SLIDER_PLANK_Y_RANGE.first,
-            SLIDER_PLANK_Y_RANGE.second));
+            static_cast<float>(SLIDER_PLANK_Y_RANGE.first),
+            static_cast<float>(SLIDER_PLANK_Y_RANGE.second)));
 
         // display calculation results
         std::stringstream ss;
@@ -201,8 +203,8 @@ auto main() -> int
         // checkboxes
         static constexpr Rectangle checkbox1_rect{ 40, 370, 20, 20 };
         static constexpr Rectangle checkbox2_rect{ 40, 400, 20, 20 };
-        staggered = GuiCheckBox(checkbox1_rect, "Stagger Pattern", staggered);
-        randomize = GuiCheckBox(checkbox2_rect, "Randomize Lengths", randomize);
+        staggered = GuiCheckBox((Rectangle)checkbox1_rect, "Stagger Pattern", staggered);
+        randomize = GuiCheckBox((Rectangle)checkbox2_rect, "Randomize Lengths", randomize);
 
         // Recalculate button
         static constexpr Rectangle recalculate_button_rect{ 40, 430, 120, 30 };

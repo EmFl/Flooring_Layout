@@ -1,5 +1,7 @@
 #include "flooring.h"
 
+#include<cmath>
+
 auto Flooring::generate_color() -> Color
 {
     static constexpr auto color_max_value = 255u;

@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <vector>
+#include <utility>
 
 inline constexpr int TARGET_FPS = 60;
 inline constexpr int WIDTH = 1920;
