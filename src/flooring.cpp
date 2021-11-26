@@ -1,6 +1,6 @@
 #include "flooring.h"
 
-auto Flooring::generate_color(int index) -> Color
+auto Flooring::generate_color() -> Color
 {
     static constexpr auto color_max_value = 255u;
     static constexpr auto color_min_value = 100u;
@@ -83,7 +83,7 @@ void Flooring::cleanup_left_over_pieces()
         std::remove_if(
             left_over_pieces_.begin(),
             left_over_pieces_.end(),
-            [](auto &p) { return p.dimensions_.first <= 0 || p.dimensions_.second <= 0; }),
+            [](const auto &p) { return p.dimensions_.first <= 0 || p.dimensions_.second <= 0; }),
         left_over_pieces_.end());
 }
 
@@ -151,7 +151,7 @@ auto Flooring::calculate() -> Result
         {
             index++;
             uncut_planks++;
-            planks_.emplace_back(index, current_position_, plank_size_, generate_color(index));
+            planks_.emplace_back(index, current_position_, plank_size_, generate_color());
             increment_position(plank_size_);
             continue;
         }
@@ -162,7 +162,7 @@ auto Flooring::calculate() -> Result
 
         if (!find_and_place_usable_piece(is_sliced_horizontally, is_sliced_vertically, size_lookup))
         {
-            const auto color = generate_color(index);
+            const auto color = generate_color();
 
             // make a new plank
             index++;

@@ -34,10 +34,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # This is the main part:
 
 set(SOURCES
-    include/config.h
-    include/flooring.h
-    include/plank.h
-    
     src/flooring.cpp
     src/main.cpp)
 

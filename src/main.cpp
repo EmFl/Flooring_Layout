@@ -17,9 +17,9 @@ auto main() -> int
 
     Vector2 camera_target{ SCREEN_CENTER_X, SCREEN_CENTER_Y };
 
-    Camera2D camera = { 0 };
+    Camera2D camera{};
     camera.target = camera_target;
-    camera.offset = (Vector2){ SCREEN_CENTER_X, SCREEN_CENTER_Y };
+    camera.offset = { SCREEN_CENTER_X, SCREEN_CENTER_Y };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 

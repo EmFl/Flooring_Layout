@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLANK_H
+#define PLANK_H
 
 #include <sstream>
 #include <utility>
@@ -36,3 +37,5 @@ struct Plank
         DrawRectangleLines(x, y, w, h, BLACK);
     }
 };
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FLOORING_H
+#define FLOORING_H
 
 #include <raylib.h>
 
@@ -26,7 +27,11 @@ struct Result
 class Flooring
 {
 public:
-    void configure(std::pair<int, int>& room_size, std::pair<int, int>& plank_size, bool staggered, bool randomize_lengths)
+    void configure(
+        const std::pair<int, int>& room_size,
+        const std::pair<int, int>& plank_size,
+        bool staggered,
+        bool randomize_lengths)
     {
         room_size_ = room_size;
         plank_size_ = plank_size;
@@ -50,7 +55,7 @@ private:
 
     std::mt19937 rng_{ std::random_device{}() };
 
-    [[nodiscard]] auto generate_color(int index) -> Color;
+    [[nodiscard]] auto generate_color() -> Color;
     [[nodiscard]] auto generate_lengths(int start, int end) -> int;
     [[nodiscard]] auto calculate_slice() -> std::pair<int, int>;
 
@@ -64,3 +69,5 @@ private:
         bool is_sliced_vertically,
         const std::pair<int, int>& size_lookup) -> bool;
 };
+
+#endif

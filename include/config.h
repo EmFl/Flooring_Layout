@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include <vector>
 
@@ -20,6 +21,8 @@ inline constexpr std::pair<int, int> DEFAULT_ROOM_SIZE{ 560, 400 };
 inline constexpr std::pair<int, int> DEFAULT_PLANK_SIZE{ 130, 25 };
 
 // config sliders
-inline static constexpr std::pair<int, int> SLIDER_ROOM_RANGE{ 200, 801 };
-inline static constexpr std::pair<int, int> SLIDER_PLANK_X_RANGE{ 60, 301 };
-inline static constexpr std::pair<int, int> SLIDER_PLANK_Y_RANGE{ 10, 100 };
+inline constexpr std::pair<int, int> SLIDER_ROOM_RANGE{ 200, 801 };
+inline constexpr std::pair<int, int> SLIDER_PLANK_X_RANGE{ 60, 301 };
+inline constexpr std::pair<int, int> SLIDER_PLANK_Y_RANGE{ 10, 100 };
+
+#endif
