@@ -1,8 +1,8 @@
 #ifndef PLANK_H
 #define PLANK_H
 
-#include <string>
 #include <sstream>
+#include <string>
 #include <utility>
 
 #include "raylib.h"

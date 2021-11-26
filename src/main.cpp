@@ -1,10 +1,10 @@
+#include <algorithm>
+#include <cmath>
 #include <iomanip>
 #include <random>
 #include <string>
-#include <vector>
 #include <utility>
-#include <cmath>
-#include <algorithm>
+#include <vector>
 
 #include "config.h"
 #include "flooring.h"
@@ -31,8 +31,8 @@ auto main() -> int
     bool staggered = true;
     bool randomize = false;
 
-    std::pair<int, int> room_size{DEFAULT_ROOM_SIZE};
-    std::pair<int, int> plank_size{DEFAULT_PLANK_SIZE};
+    std::pair<int, int> room_size{ DEFAULT_ROOM_SIZE };
+    std::pair<int, int> plank_size{ DEFAULT_PLANK_SIZE };
 
     Flooring flooring;
     flooring.configure(room_size, plank_size, staggered, randomize);
@@ -203,8 +203,8 @@ auto main() -> int
         // checkboxes
         static constexpr Rectangle checkbox1_rect{ 40, 370, 20, 20 };
         static constexpr Rectangle checkbox2_rect{ 40, 400, 20, 20 };
-        staggered = GuiCheckBox((Rectangle)checkbox1_rect, "Stagger Pattern", staggered);
-        randomize = GuiCheckBox((Rectangle)checkbox2_rect, "Randomize Lengths", randomize);
+        staggered = GuiCheckBox(checkbox1_rect, "Stagger Pattern", staggered);
+        randomize = GuiCheckBox(checkbox2_rect, "Randomize Lengths", randomize);
 
         // Recalculate button
         static constexpr Rectangle recalculate_button_rect{ 40, 430, 120, 30 };

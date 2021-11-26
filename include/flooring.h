@@ -1,17 +1,17 @@
 #ifndef FLOORING_H
 #define FLOORING_H
 
-#include <raylib.h>
-
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <random>
-#include <string>
 #include <stdexcept>
+#include <string>
 #include <utility>
 #include <vector>
 
 #include "plank.h"
+#include "raylib.h"
 
 inline constexpr size_t STAGGER_PATTERN_SIZE = 6;
 inline constexpr std::array<int, STAGGER_PATTERN_SIZE> STAGGER_PATTERN{ { 0, 50, -30, 30, -20, 20 } };
