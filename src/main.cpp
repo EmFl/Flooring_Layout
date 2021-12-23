@@ -24,7 +24,7 @@ auto main() -> int
 
     InitWindow(screenWidth, screenHeight, "Planks");
 
-    Vector2 camera_target{ screenWidth / 2.0f, screenHeight / 2.0f };
+    Vector2 camera_target{ static_cast<float>(screenWidth) / 2.0f, static_cast<float>(screenHeight) / 2.0f };
 
     Camera2D camera{};
     camera.target = camera_target;
@@ -84,7 +84,7 @@ auto main() -> int
         if (IsKeyPressed(KEY_R))
         {
             camera.zoom = 1.0f;
-            camera_target = { screenWidth / 2.0f, screenHeight / 2.0f };
+            camera_target = { static_cast<float>(screenWidth) / 2.0f, static_cast<float>(screenHeight) / 2.0f };
             camera.target = camera_target;
         }
 
