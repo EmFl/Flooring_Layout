@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
-#include <random>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -53,8 +52,6 @@ private:
 
     std::vector<Plank> planks_{};
     std::vector<Plank> left_over_pieces_{};
-
-    std::mt19937 rng_{ std::random_device{}() };
 
     [[nodiscard]] auto generate_color() -> Color;
     [[nodiscard]] auto generate_lengths(int start, int end) -> int;

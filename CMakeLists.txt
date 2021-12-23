@@ -28,13 +28,25 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 
 endif()
 
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -ggdb -Wall -Wextra -Wshadow -pedantic ")
+
+if(MSVC)
+    add_compile_options("/std:c++17" "/W4" "$<$<CONFIG:RELEASE>:/O2>")
+else()
+    add_compile_options("-std=c++17" "-Wall" "-Wextra" "-Wshadow" "-pedantic" "$<$<CONFIG:RELEASE>:-O3>")
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        add_compile_options("-stdlib=libc++")
+    else()
+        # nothing special for gcc at the moment
+    endif()
+endif()
 
 # This is the main part:
 
 set(SOURCES
+    include/random_generator.h
 	include/config.h
 	include/flooring.h
 	include/plank.h
@@ -47,8 +59,9 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 set(CMAKE_CXX_CPPCHECK "cppcheck")
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE extras)
 
-target_link_libraries(${PROJECT_NAME} raylib)
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
 if (APPLE)

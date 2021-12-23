@@ -12,17 +12,23 @@
 #include "raylib.h"
 
 #define RAYGUI_IMPLEMENTATION
-#include "extras/raygui.h"
+#pragma warning(push, 0)
+#include "raygui.h"
+#pragma warning(pop)
 
 auto main() -> int
 {
-    InitWindow(WIDTH, HEIGHT, "Planks");
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    int screenWidth = DEFAULT_WIDTH;
+    int screenHeight = DEFAULT_HEIGHT;
 
-    Vector2 camera_target{ SCREEN_CENTER_X, SCREEN_CENTER_Y };
+    InitWindow(screenWidth, screenHeight, "Planks");
+
+    Vector2 camera_target{ screenWidth / 2.0f, screenHeight / 2.0f };
 
     Camera2D camera{};
     camera.target = camera_target;
-    camera.offset = { SCREEN_CENTER_X, SCREEN_CENTER_Y };
+    camera.offset = { camera_target.x, camera_target.y };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
@@ -40,6 +46,10 @@ auto main() -> int
 
     while (!WindowShouldClose())
     {
+        // Update on resize
+        screenWidth = GetScreenWidth();
+        screenHeight = GetScreenHeight();
+
         // Move camera
         if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
         {
@@ -74,7 +84,7 @@ auto main() -> int
         if (IsKeyPressed(KEY_R))
         {
             camera.zoom = 1.0f;
-            camera_target = { SCREEN_CENTER_X, SCREEN_CENTER_Y };
+            camera_target = { screenWidth / 2.0f, screenHeight / 2.0f };
             camera.target = camera_target;
         }
 
@@ -162,34 +172,34 @@ auto main() -> int
         static constexpr Rectangle slider3_rect{ slider_left_margin, 200, slider_width, slider_height };
         static constexpr Rectangle slider4_rect{ slider_left_margin, 230, slider_width, slider_height };
 
-        room_size.first = std::floor(GuiSliderBar(
+        room_size.first = static_cast<int>(std::floor(GuiSliderBar(
             slider1_rect,
             "Room X",
             std::to_string(room_size.first).c_str(),
             static_cast<float>(room_size.first),
             static_cast<float>(SLIDER_ROOM_RANGE.first),
-            static_cast<float>(SLIDER_ROOM_RANGE.second)));
-        room_size.second = std::floor(GuiSliderBar(
+            static_cast<float>(SLIDER_ROOM_RANGE.second))));
+        room_size.second = static_cast<int>(std::floor(GuiSliderBar(
             slider2_rect,
             "Room Y",
             std::to_string(room_size.second).c_str(),
             static_cast<float>(room_size.second),
             static_cast<float>(SLIDER_ROOM_RANGE.first),
-            static_cast<float>(SLIDER_ROOM_RANGE.second)));
-        plank_size.first = std::floor(GuiSliderBar(
+            static_cast<float>(SLIDER_ROOM_RANGE.second))));
+        plank_size.first = static_cast<int>(std::floor(GuiSliderBar(
             slider3_rect,
             "Plank X",
             std::to_string(plank_size.first).c_str(),
             static_cast<float>(plank_size.first),
             static_cast<float>(SLIDER_PLANK_X_RANGE.first),
-            static_cast<float>(SLIDER_PLANK_X_RANGE.second)));
-        plank_size.second = std::floor(GuiSliderBar(
+            static_cast<float>(SLIDER_PLANK_X_RANGE.second))));
+        plank_size.second = static_cast<int>(std::floor(GuiSliderBar(
             slider4_rect,
             "Plank Y",
             std::to_string(plank_size.second).c_str(),
             static_cast<float>(plank_size.second),
             static_cast<float>(SLIDER_PLANK_Y_RANGE.first),
-            static_cast<float>(SLIDER_PLANK_Y_RANGE.second)));
+            static_cast<float>(SLIDER_PLANK_Y_RANGE.second))));
 
         // display calculation results
         std::stringstream ss;

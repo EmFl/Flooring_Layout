@@ -1,18 +1,21 @@
 #include "flooring.h"
 
+#include "random_generator.h"
+
 auto Flooring::generate_color() -> Color
 {
-    static constexpr auto color_max_value = 255u;
-    static constexpr auto color_min_value = 100u;
+    static constexpr auto min_value = 100;
+    static constexpr auto max_value = 255;
 
-    static std::uniform_int_distribution<unsigned char> dist(color_min_value, color_max_value);
-    return { dist(rng_), dist(rng_), dist(rng_), color_max_value };
+    return { static_cast<unsigned char>(random_pick(min_value, max_value)),
+             static_cast<unsigned char>(random_pick(min_value, max_value)),
+             static_cast<unsigned char>(random_pick(min_value, max_value)),
+             max_value };
 }
 
 auto Flooring::generate_lengths(int start, int end) -> int
 {
-    static std::uniform_int_distribution<int> dist(start, end);
-    return dist(rng_);
+    return random_pick(start, end);
 }
 
 auto Flooring::calculate_slice() -> std::pair<int, int>
@@ -132,6 +135,8 @@ auto Flooring::find_and_place_usable_piece(
 
 auto Flooring::calculate() -> Result
 {
+    randomize();
+
     current_position_ = { 0, 0 };
     stagger_pattern_index_ = 0;
 
